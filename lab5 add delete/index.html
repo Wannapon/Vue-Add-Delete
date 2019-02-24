@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <title>Page Title</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <link
+      rel="stylesheet"
+      href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css"
+      integrity="sha384-MCw98/SFnGE8fJT3GXwEOngsV7Zt27NXFoaoApmYm81iuXoPkFOJwJ8ERdknLPMO"
+      crossorigin="anonymous"/>
+    
+  </head>
+  <body>
+      <br>
+      <div id="app">
+        <select v-model="selectedSubject" style="margin-left : 30px">
+            <option disabled value="">Choose</option>
+            <option v-for="s in subjects" :value="s">{{s}}</option>
+        </select>
+        <input type="text" v-model="todoMessage" placeholder="Enter your edit">
+        <button @click="addTodo">ADD</button>
+        <todo v-for="(t,i) in todos" :key="i" v-bind:todo="t" @remove-todo="removeTodo(i)"></todo>
+      </div>
+  </body>
+  <script src="https://unpkg.com/vue/dist/vue.js"></script>
+  <script>
+      Vue.component('todo',{
+        props:{
+            todo:{
+                'type':Object,
+                required: true
+            }
+        },
+        methods:{
+            remove(){
+                this.$emit('remove-todo');
+            }
+        },
+        template: '<div>{{todo.subject}} : {{todo.message}} <button @click="remove">X</button></div>'
+      });
+ const app =  new Vue({
+      el: "#app",
+      data: {
+        selectedSubject:'',
+        todoMessage:'',  
+        subjects:['cs442','cs446','cs494'],
+        todos: [], 
+      },
+      methods:{
+        addTodo() {
+          if(app.selectedSubject == '' || app.todoMessage == '') return;
+            app.todos.push({
+                subject: app.selectedSubject,
+                message: app.todoMessage
+            })
+            app.selectedSubject = '';
+            app.todoMessage = '';
+        },
+        removeTodo(index) {
+          app.todos.splice(index,1);
+        }
+      }
+    });
+  </script>
+</html>
